@@ -1,0 +1,38 @@
+﻿@page "/encrypt"
+@using EncryptionAndDecryptionWebService.Data
+<h3>Encryption</h3>
+
+
+<div class="container">
+
+    <input style="height:5rem; width:30rem; display:block;" placeholder="Start Typing" class="rounded-1" type="text" @bind-value=plaintext />
+    <input class="rounded-1 h-25" placeholder="Password" type="password" @bind-value=password />
+    <button @onclick="Encrypt" class="btn btn-primary" type="submit">Encrypt</button>
+</div>
+
+
+<p><code> <b>CipherText:@cipherText</b> </code></p>
+
+
+
+
+
+@code {
+    private string plaintext = "";
+    private string password = "";
+    private string cipherText = "";
+
+    public async Task<string> Encrypt()
+    {
+        cipherText = await Protector.Encrypt(plaintext, password);
+        return cipherText;
+    }
+
+
+    // public async Task<string> Decrypt()
+    // {
+    //     plaintext = await Protector.Decrypt(cipherText, password);
+    //     return plaintext;
+    // }
+
+}

@@ -1,0 +1,53 @@
+﻿@page "/register"
+@using Data;
+@inject IHttpContextAccessor context
+
+<h3>Register</h3>
+<div class="form-group" style="display:flex; flex-direction:column; gap:1rem; ">
+    <input style="width:250px;" class="form-control" placeholder="Username" type="text" @bind-value=username />
+    <input style="width:250px;" class="form-control" placeholder="Password" type="password" @bind-value=password />
+    <button style="width:250px;" class="btn btn-primary" @onclick=Registration>
+        Register
+    </button>
+</div>
+
+
+
+@if (user is null)
+{
+    <p class="progress-bar-animated"></p>
+}else
+{
+    <p>The Connection id is:<code>@context.HttpContext.Connection.Id</code></p>
+    <b>The salt is:@user.salt</b>
+}
+
+@code {
+    private string username;
+    private string password;
+    private User user;
+
+    public async Task<string> Registration()
+    {
+
+        if (!string.IsNullOrEmpty(username) || !string.IsNullOrEmpty(password))
+        {
+            try
+            {
+
+                 user = Protector.Register(username, password);
+
+            }
+            catch (ArgumentNullException ex)
+            {
+                Console.WriteLine(ex.Message);
+                await context.HttpContext.Response.WriteAsJsonAsync<string>(ex.Message);
+                throw;
+            }
+        }
+
+
+
+        return $"{username} has been created";
+    }
+}

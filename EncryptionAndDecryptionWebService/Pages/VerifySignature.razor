@@ -1,0 +1,54 @@
+﻿@page "/verify-signature"
+@using Data
+<h3>VerifySignature</h3>
+
+
+<div class="form-group" style="display:flex; flex-direction:column; gap:1rem;">
+    <input style="width:250px;" class="form-control" placeholder="data" type="text" @bind-value=data />
+    <input style="width:250px;" class="form-control" placeholder="signature" type="text" @bind-value=signature />
+    <button style="width:250px;" class="btn btn-warning" @onclick=ValidateSignature>
+        Validate Signature
+    </button>
+</div>
+
+@if (!string.IsNullOrEmpty(verifiedSignature))
+{
+    <p>
+        <b>
+            @verifiedSignature
+        </b>
+    </p>
+}
+
+@code {
+    private static string data;
+    private static string signature;
+    private static string verifiedSignature;
+
+    public static Task<bool> ValidateSignature()
+    {
+        if (!string.IsNullOrEmpty(data))
+        {
+            try
+            {
+                if (Protector.VerifySignature(data, signature))
+                {
+                    verifiedSignature = "The Data matches the signature and has not been tampered with";
+                }
+                else
+                {
+                    verifiedSignature = "The Data does not match the signature and has been tampered with!!!";
+                }
+
+
+            }
+            catch (CryptographicException ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+        }
+        return Task.FromResult(Protector.VerifySignature(data, signature));
+
+    }
+}

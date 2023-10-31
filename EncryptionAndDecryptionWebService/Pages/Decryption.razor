@@ -1,0 +1,60 @@
+﻿@page "/decrypt"
+@using EncryptionAndDecryptionWebService.Data
+<h3>Decryption</h3>
+
+
+
+
+<div class="container">
+    <input style="height:5rem; width:30rem; display:block;" placeholder="Paste CipherText Here" class="rounded-1" type="text" @bind-value=cipherText />
+    <input class="rounded-1 h-25" placeholder="Password" type="password" @bind-value=password />
+    <button @onclick="Decrypt" class="btn btn-primary" type="submit">Decrypt</button>
+</div>
+
+<p><code> <b>PlainText:@plaintext</b> </code></p>
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p>
+        <b>
+           ErrorMessage: @errorMessage
+         
+
+           
+        </b>
+    </p>
+}
+
+
+
+@code {
+    private string plaintext = "";
+    private string password = "";
+    private string cipherText = "";
+    private string errorMessage = "";
+
+
+
+    public async Task<string> Decrypt()
+    {
+        try
+        {
+            plaintext = await Protector.Decrypt(cipherText, password);
+
+        }
+        catch (CryptographicException ex)
+        {
+
+            errorMessage = ex.Message;
+
+        }
+        return plaintext;
+    }
+
+    public void ClearErrorMessage()
+    {
+
+
+       
+        errorMessage = string.Empty;
+    }
+}

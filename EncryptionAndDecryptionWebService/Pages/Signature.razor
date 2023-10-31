@@ -1,0 +1,37 @@
+﻿@page "/signature"
+@using Data
+
+<h3>Signature</h3>
+
+
+<div class="form-group" style="display:flex; flex-direction:column; gap:1rem;">
+    <input style="width:250px;" class="form-control" placeholder="Input" type="text" @bind-value=data />
+    <button style="width:250px;" class="btn btn-primary" @onclick=Sign>
+        Generate Signature
+    </button>
+</div>
+
+@if (!string.IsNullOrEmpty(signature))
+{
+    <p>Signature <code>@(signature)</code> has been sucessfully Genereated </p>
+
+}
+
+
+
+@code {
+    private static string data;
+    private static string signature;
+    private static string verifiedSignature;
+
+
+
+    public static Task<string> Sign()
+    {
+        signature = Protector.GenerateSignature(data);
+        return Task.FromResult(signature);
+    }
+
+
+
+}
